@@ -114,6 +114,8 @@ class TimelinePanel extends React.Component {
 
         // which layout to use
         layout: LayoutPropType,
+
+        roomOnlyView: PropTypes.bool,
     }
 
     // a map from room id to read marker event timestamp
@@ -1445,6 +1447,7 @@ class TimelinePanel extends React.Component {
                 showReactions={this.props.showReactions}
                 layout={this.props.layout}
                 enableFlair={SettingsStore.getValue(UIFeature.Flair)}
+                roomOnlyView={this.props.roomOnlyView}
             />
         );
     }

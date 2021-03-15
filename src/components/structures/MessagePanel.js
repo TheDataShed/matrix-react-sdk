@@ -142,6 +142,8 @@ export default class MessagePanel extends React.Component {
 
         // whether or not to show flair at all
         enableFlair: PropTypes.bool,
+
+        roomOnlyView: PropTypes.bool,
     };
 
     constructor(props) {
@@ -625,6 +627,7 @@ export default class MessagePanel extends React.Component {
                         showReactions={this.props.showReactions}
                         layout={this.props.layout}
                         enableFlair={this.props.enableFlair}
+                        roomOnlyView={this.props.roomOnlyView}
                     />
                 </TileErrorBoundary>
             </li>,
@@ -975,7 +978,9 @@ class CreationGrouper {
             summaryText = _t("%(creator)s created and configured the room.", { creator });
         }
 
-        ret.push(<NewRoomIntro key="newroomintro" />);
+        if (!panel.props.roomOnlyView) {
+            ret.push(<NewRoomIntro key="newroomintro" />);
+        }
 
         ret.push(
             <EventListSummary

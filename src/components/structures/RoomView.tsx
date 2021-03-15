@@ -117,6 +117,8 @@ interface IProps {
 
     // Called with the credentials of a registered user (if they were a ROU that transitioned to PWLU)
     onRegistered?(credentials: IMatrixClientCreds): void;
+
+    roomOnlyView?: boolean;
 }
 
 export interface IState {
@@ -1970,6 +1972,7 @@ export default class RoomView extends React.Component<IProps, IState> {
                 resizeNotifier={this.props.resizeNotifier}
                 showReactions={true}
                 layout={this.state.layout}
+                roomOnlyView={this.props.roomOnlyView}
             />);
 
         let topUnreadMessagesBar = null;
@@ -2008,7 +2011,7 @@ export default class RoomView extends React.Component<IProps, IState> {
             mx_RoomView_inCall: Boolean(activeCall),
         });
 
-        const showChatEffects = SettingsStore.getValue('showChatEffects');
+        const showChatEffects = !this.props.roomOnlyView && SettingsStore.getValue('showChatEffects');
 
         return (
             <RoomContext.Provider value={this.state}>
@@ -2017,7 +2020,7 @@ export default class RoomView extends React.Component<IProps, IState> {
                         <EffectsOverlay roomWidth={this.roomView.current.offsetWidth} />
                     }
                     <ErrorBoundary>
-                        <RoomHeader
+                        {!this.props.roomOnlyView && <RoomHeader
                             room={this.state.room}
                             searchInfo={searchInfo}
                             oobData={this.props.oobData}
@@ -2031,10 +2034,10 @@ export default class RoomView extends React.Component<IProps, IState> {
                             e2eStatus={this.state.e2eStatus}
                             onAppsClick={this.state.hasPinnedWidgets ? this.onAppsClick : null}
                             appsShown={this.state.showApps}
-                        />
+                        />}
                         <MainSplit panel={rightPanel} resizeNotifier={this.props.resizeNotifier}>
                             <div className="mx_RoomView_body">
-                                {auxPanel}
+                                {!this.props.roomOnlyView && auxPanel}
                                 <div className={timelineClasses}>
                                     {topUnreadMessagesBar}
                                     {jumpToBottom}

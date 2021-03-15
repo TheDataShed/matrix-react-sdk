@@ -233,6 +233,8 @@ export default class EventTile extends React.Component {
 
         // whether or not to show flair at all
         enableFlair: PropTypes.bool,
+
+        roomOnlyView: PropTypes.bool,
     };
 
     static defaultProps = {
@@ -790,6 +792,7 @@ export default class EventTile extends React.Component {
             getTile={this.getTile}
             getReplyThread={this.getReplyThread}
             onFocusChange={this.onActionBarFocusChange}
+            roomOnlyView={this.props.roomOnlyView}
         /> : undefined;
 
         const timestamp = this.props.mxEvent.getTs() ?

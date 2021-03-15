@@ -110,6 +110,7 @@ export default class MessageActionBar extends React.PureComponent {
         getTile: PropTypes.func,
         getReplyThread: PropTypes.func,
         onFocusChange: PropTypes.func,
+        roomOnlyView: PropTypes.bool,
     };
 
     static contextType = RoomContext;
@@ -199,13 +200,13 @@ export default class MessageActionBar extends React.PureComponent {
             {reactButton}
             {replyButton}
             {editButton}
-            <OptionsButton
+            {!this.props.roomOnlyView && <OptionsButton
                 mxEvent={this.props.mxEvent}
                 getReplyThread={this.props.getReplyThread}
                 getTile={this.props.getTile}
                 permalinkCreator={this.props.permalinkCreator}
                 onFocusChange={this.onFocusChange}
-            />
+            />}
         </Toolbar>;
     }
 }

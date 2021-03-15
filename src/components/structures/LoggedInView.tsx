@@ -254,7 +254,7 @@ class LoggedInView extends React.Component<IProps, IState> {
         if (isNaN(lhsSize)) {
             lhsSize = 350;
         }
-        this.resizer.forHandleAt(0).resize(lhsSize);
+        this.resizer.forHandleAt(0)?.resize(lhsSize);
     }
 
     onAccountData = (event) => {
@@ -577,6 +577,8 @@ class LoggedInView extends React.Component<IProps, IState> {
         const GroupView = sdk.getComponent('structures.GroupView');
         const MyGroups = sdk.getComponent('structures.MyGroups');
         const ToastContainer = sdk.getComponent('structures.ToastContainer');
+        
+        const roomOnlyView = this.props.config.roomOnlyView === true;
 
         let pageElement;
 
@@ -591,6 +593,7 @@ class LoggedInView extends React.Component<IProps, IState> {
                     viaServers={this.props.viaServers}
                     key={this.props.currentRoomId || 'roomview'}
                     resizeNotifier={this.props.resizeNotifier}
+                    roomOnlyView={roomOnlyView}
                 />;
                 break;
 
@@ -618,6 +621,11 @@ class LoggedInView extends React.Component<IProps, IState> {
                 break;
         }
 
+        // do not display other page elements
+        if (roomOnlyView && this.props.page_type !== PageTypes.RoomView) {
+            pageElement = undefined;
+        }
+
         let bodyClasses = 'mx_MatrixChat';
         if (this.state.useCompactLayout) {
             bodyClasses += ' mx_MatrixChat_useCompactLayout';
@@ -638,18 +646,18 @@ class LoggedInView extends React.Component<IProps, IState> {
                     className='mx_MatrixChat_wrapper'
                     aria-hidden={this.props.hideToSRUsers}
                 >
-                    <ToastContainer />
+                    { !roomOnlyView && <ToastContainer /> }
                     <DragDropContext onDragEnd={this._onDragEnd}>
                         <div ref={this._resizeContainer} className={bodyClasses}>
-                            { leftPanel }
-                            <ResizeHandle />
+                            { !roomOnlyView && leftPanel }
+                            { !roomOnlyView && <ResizeHandle /> }
                             { pageElement }
                         </div>
                     </DragDropContext>
                 </div>
-                <CallContainer />
-                <NonUrgentToastContainer />
-                <HostSignupContainer />
+                { !roomOnlyView && <CallContainer /> }
+                { !roomOnlyView && <NonUrgentToastContainer /> }
+                { !roomOnlyView && <HostSignupContainer /> }
             </MatrixClientContext.Provider>
         );
     }
