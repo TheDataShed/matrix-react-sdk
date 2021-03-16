@@ -90,6 +90,9 @@ export default class MemberAvatar extends React.Component<IProps, IState> {
 
         if (viewUserOnClick) {
             onClick = () => {
+                // advertise user click to parent window (e.g. page containing an <iframe>)
+                parent?.postMessage({ memberAvatarClicked: userId }, "*")
+
                 dis.dispatch({
                     action: Action.ViewUser,
                     member: this.props.member,
