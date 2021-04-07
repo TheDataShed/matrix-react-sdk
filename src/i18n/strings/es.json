@@ -3141,5 +3141,6 @@
     "Spaces prototype. Incompatible with Communities, Communities v2 and Custom Tags. Requires compatible homeserver for some features.": "Prototipo de espacios. No compatible con comunidades, comunidades v2 o etiquetas personalizadas. Necesita un servidor base compatible para algunas funcionalidades.",
     "This homeserver has been blocked by its administrator.": "Este servidor base ha sido bloqueado por su administración.",
     "This homeserver has been blocked by it's administrator.": "Este servidor base ha sido bloqueado por su administración.",
-    "You're already in a call with this person.": "Ya estás en una llamada con esta persona."
+    "You're already in a call with this person.": "Ya estás en una llamada con esta persona.",
+    "Translate": "Traducir"
 }

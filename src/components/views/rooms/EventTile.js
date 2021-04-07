@@ -265,6 +265,9 @@ export default class EventTile extends React.Component {
             previouslyRequestedKeys: false,
             // The Relations model from the JS SDK for reactions to `mxEvent`
             reactions: this.getReactions(),
+
+            /* whether the body should be translated */
+            translate: false,
         };
 
         // don't do RR animations until we are mounted
@@ -355,6 +358,14 @@ export default class EventTile extends React.Component {
         this._verifyEvent(this.props.mxEvent);
     }
 
+    onAction = (payload) => {
+        if (payload.action === 'translate_event') {
+            if (this.props.mxEvent.getId() === payload.event.getId()) {
+                this.setState({ translate: true });
+            }
+        }
+    };
+
     componentDidMount() {
         this._suppressReadReceiptAnimation = false;
         const client = this.context;
@@ -369,6 +380,8 @@ export default class EventTile extends React.Component {
             client.on("Room.receipt", this._onRoomReceipt);
             this._isListeningForReceipts = true;
         }
+            
+        this.dispatcherRef = dis.register(this.onAction);
     }
 
     // TODO: [REACT-WARNING] Replace with appropriate lifecycle event
@@ -994,7 +1007,8 @@ export default class EventTile extends React.Component {
                                            highlights={this.props.highlights}
                                            highlightLink={this.props.highlightLink}
                                            showUrlPreview={this.props.showUrlPreview}
-                                           onHeightChanged={this.props.onHeightChanged} />
+                                           onHeightChanged={this.props.onHeightChanged}
+                                           translate={this.props.translate} />
                         </div>
                     </div>
                 );
@@ -1009,7 +1023,8 @@ export default class EventTile extends React.Component {
                                            highlightLink={this.props.highlightLink}
                                            showUrlPreview={this.props.showUrlPreview}
                                            tileShape={this.props.tileShape}
-                                           onHeightChanged={this.props.onHeightChanged} />
+                                           onHeightChanged={this.props.onHeightChanged}
+                                           translate={this.props.translate} />
                         </div>
                         <a
                             className="mx_EventTile_senderDetailsLink"
@@ -1052,7 +1067,8 @@ export default class EventTile extends React.Component {
                                            highlightLink={this.props.highlightLink}
                                            onHeightChanged={this.props.onHeightChanged}
                                            replacingEventId={this.props.replacingEventId}
-                                           showUrlPreview={false} />
+                                           showUrlPreview={false}
+                                           translate={this.props.translate} />
                         </div>
                     </div>
                 );
@@ -1083,7 +1099,8 @@ export default class EventTile extends React.Component {
                                            highlights={this.props.highlights}
                                            highlightLink={this.props.highlightLink}
                                            showUrlPreview={this.props.showUrlPreview}
-                                           onHeightChanged={this.props.onHeightChanged} />
+                                           onHeightChanged={this.props.onHeightChanged}
+                                           translate={this.state.translate} />
                             { keyRequestInfo }
                             { reactionsRow }
                             { actionBar }

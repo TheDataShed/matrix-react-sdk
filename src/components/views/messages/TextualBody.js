@@ -36,6 +36,7 @@ import {toRightOf} from "../../structures/ContextMenu";
 import {copyPlaintext} from "../../../utils/strings";
 import AccessibleTooltipButton from "../elements/AccessibleTooltipButton";
 import {replaceableComponent} from "../../../utils/replaceableComponent";
+import translate from '../../../translate';
 
 @replaceableComponent("views.messages.TextualBody")
 export default class TextualBody extends React.Component {
@@ -57,6 +58,9 @@ export default class TextualBody extends React.Component {
 
         /* the shape of the tile, used */
         tileShape: PropTypes.string,
+
+        /* whether the body should be translated */
+        translate: PropTypes.bool
     };
 
     constructor(props) {
@@ -71,6 +75,9 @@ export default class TextualBody extends React.Component {
 
             // track whether the preview widget is hidden
             widgetHidden: false,
+
+            // translated content, or null if not yet translated
+            translatedContent: null,
         };
     }
 
@@ -249,6 +256,21 @@ export default class TextualBody extends React.Component {
                 this._applyFormatting();
             }
         }
+
+        if (this.props.translate) {
+            const language = SettingsStore.getValue("language", null, true);
+            const translatedContent = this.props.mxEvent.getContent();
+            Promise.all([
+                translate(translatedContent.body, language),
+                translate(translatedContent.formatted_body, language),
+            ]).then(translations => {
+                translatedContent.body = translations[0];
+                translatedContent.formatted_body = translations[1];
+                this.setState({ translatedContent });
+            }).catch(e => {
+                console.warn(`Unable to translate content into ${language}`, e);
+            });
+        }
     }
 
     componentWillUnmount() {
@@ -265,9 +287,11 @@ export default class TextualBody extends React.Component {
                 nextProps.replacingEventId !== this.props.replacingEventId ||
                 nextProps.highlightLink !== this.props.highlightLink ||
                 nextProps.showUrlPreview !== this.props.showUrlPreview ||
+                nextProps.translate !== this.props.translate ||
                 nextProps.editState !== this.props.editState ||
                 nextState.links !== this.state.links ||
-                nextState.widgetHidden !== this.state.widgetHidden);
+                nextState.widgetHidden !== this.state.widgetHidden ||
+                nextState.translatedContent !== this.state.translatedContent);
     }
 
     calculateUrlPreview() {
@@ -491,7 +515,7 @@ export default class TextualBody extends React.Component {
             return <EditMessageComposer editState={this.props.editState} className="mx_EventTile_content" />;
         }
         const mxEvent = this.props.mxEvent;
-        const content = mxEvent.getContent();
+        const content = this.state.translatedContent || mxEvent.getContent();
 
         // only strip reply if this is the original replying event, edits thereafter do not have the fallback
         const stripReply = !mxEvent.replacingEvent() && ReplyThread.getParentEventId(mxEvent);
@@ -501,6 +525,7 @@ export default class TextualBody extends React.Component {
             stripReplyFallback: stripReply,
             ref: this._content,
         });
+        
         if (this.props.replacingEventId) {
             body = <>
                 {body}

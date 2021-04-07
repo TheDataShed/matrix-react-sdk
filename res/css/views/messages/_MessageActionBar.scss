@@ -102,6 +102,10 @@ limitations under the License.
     mask-image: url('$(res)/img/element-icons/room/message-bar/edit.svg');
 }
 
+.mx_MessageActionBar_translateButton::after {
+    mask-image: url('$(res)/img/element-icons/room/message-bar/translate.svg');
+}
+
 .mx_MessageActionBar_optionsButton::after {
     mask-image: url('$(res)/img/element-icons/context-menu.svg');
 }

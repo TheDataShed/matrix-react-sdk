@@ -170,10 +170,18 @@ export default class MessageActionBar extends React.PureComponent {
         });
     };
 
+    onTranslateClick = (ev) => {
+        dis.dispatch({
+            action: 'translate_event',
+            event: this.props.mxEvent,
+        });
+    };
+
     render() {
         let reactButton;
         let replyButton;
         let editButton;
+        let translateButton;
 
         if (isContentActionable(this.props.mxEvent)) {
             if (this.context.canReact) {
@@ -188,6 +196,11 @@ export default class MessageActionBar extends React.PureComponent {
                     onClick={this.onReplyClick}
                 />;
             }
+            translateButton = <RovingAccessibleTooltipButton
+                className="mx_MessageActionBar_maskButton mx_MessageActionBar_translateButton"
+                title={_t("Translate")}
+                onClick={this.onTranslateClick}
+            />
         }
         if (canEditContent(this.props.mxEvent)) {
             editButton = <RovingAccessibleTooltipButton
@@ -202,6 +215,7 @@ export default class MessageActionBar extends React.PureComponent {
             {reactButton}
             {replyButton}
             {editButton}
+            {translateButton}
             {!this.props.roomOnlyView && <OptionsButton
                 mxEvent={this.props.mxEvent}
                 getReplyThread={this.props.getReplyThread}
