@@ -25,7 +25,7 @@ import {formatDate} from '../../../DateUtils';
 import * as sdk from '../../../index';
 import Modal from '../../../Modal';
 import dis from '../../../dispatcher/dispatcher';
-import { _t } from '../../../languageHandler';
+import { _t, getCurrentLanguage } from '../../../languageHandler';
 import * as ContextMenu from '../../structures/ContextMenu';
 import SettingsStore from "../../../settings/SettingsStore";
 import ReplyThread from "../elements/ReplyThread";
@@ -258,7 +258,7 @@ export default class TextualBody extends React.Component {
         }
 
         if (this.props.translate) {
-            const language = SettingsStore.getValue("language", null, true);
+            const language = getCurrentLanguage();
             const translatedContent = this.props.mxEvent.getContent();
             Promise.all([
                 translate(translatedContent.body, language),
